@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SubsideProbe-IoT | Smart Coal Mine Subsidence Monitoring</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Three.js CDN for procedural 3D CAD visualization -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+
+  <!-- Top Status Bar -->
+  <header class="top-nav">
+    <div class="brand-badge">
+      <span class="badge-tag">HARDWARE DECK</span>
+      <span>SUBSIDE-PROBE // MK-IV</span>
+    </div>
+    <div class="system-status">
+      <div class="status-pill">
+        <span class="indicator-dot"></span>
+        <span>MESH NODES: 12 ONLINE</span>
+      </div>
+      <div class="status-pill">
+        <span>LORA: 868 MHz ACTIVE</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Presentation Viewport -->
+  <main class="presentation-container">
+
+    <!-- SLIDE 1: Title & Hero -->
+    <section class="slide active" id="slide-0">
+      <div class="hero-grid">
+        <div class="hero-content">
+          <div class="slide-tag">Autonomous Geological Telemetry</div>
+          <h1>In-Situ Coal Mine <span>Subsidence Probe</span></h1>
+          <p class="hero-description">
+            A ruggedized borehole monitoring instrument engineered for underground coal mining strata. 
+            Measures shear deformation, overburden bed tilt, and pore-water ingress to compute real-time goaf collapse probability and trigger instant early warnings.
+          </p>
+          <div class="specs-grid">
+            <div class="spec-box">
+              <div class="spec-label">CONTROLLER</div>
+              <div class="spec-value">STM32 ARM-M4</div>
+            </div>
+            <div class="spec-box">
+              <div class="spec-label">COMMS</div>
+              <div class="spec-value">LoRa Chirp 868M</div>
+            </div>
+            <div class="spec-box">
+              <div class="spec-label">ANGULAR RES.</div>
+              <div class="spec-value">±0.05° Tilt</div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-graphic">
+          <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 2rem; font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.8;">
+            <p style="color: var(--accent-orange); margin-bottom: 10px;">// SYSTEM DIAGNOSTICS & TELEMETRY</p>
+            <p>> Multi-axis displacement: RUNNING</p>
+            <p>> Strata Shear dynamic flex: CALIBRATED</p>
+            <p>> Sub-surface moisture sensor: 42.1% RH</p>
+            <p>> Mesh network latency: 46ms via LoRa</p>
+            <p>> Early Warning siren trigger: STANDBY [NORMAL]</p>
+            <div style="margin-top: 20px; padding: 12px; background: rgba(0,210,255,0.05); border: 1px solid var(--accent-cyan); border-radius: 6px; color: var(--accent-cyan);">
+              USE KEYS [←] [→] OR BOTTOM BUTTONS TO ADVANCE SLIDES
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 2: Sensors & Hardware Deep Dive -->
+    <section class="slide" id="slide-1">
+      <div class="slide-header">
+        <div class="slide-tag">Instrumentation Specification</div>
+        <h2 class="slide-title">Sensors & Core Processing Units</h2>
+      </div>
+      
+      <div class="cards-deck">
+        <!-- Sensor 1: MPU6050 -->
+        <article class="device-card">
+          <div class="card-icon">📐</div>
+          <h3 class="card-title">MPU6050</h3>
+          <div class="card-subtitle">3-AXIS ACCELEROMETER / GYROSCOPE</div>
+          <p class="card-desc">
+            Monitors strata inclination, borehole rotational deviation, and tilt angles (Pitch & Roll). 
+            Detects bed separation and ground shifting long before surface cracks appear.
+          </p>
+          <div class="card-footer">I2C BUS // ±0.05° ANGULAR DRIFT</div>
+        </article>
+
+        <!-- Sensor 2: Flex Sensor -->
+        <article class="device-card">
+          <div class="card-icon">〰️</div>
+          <h3 class="card-title">Flex Bend Sensor</h3>
+          <div class="card-subtitle">HIGH-ELASTICITY RESISTIVE STRIP</div>
+          <p class="card-desc">
+            Embedded inside the probe’s flexible core tube across lithological strata boundaries. 
+            Measures lateral shear displacement, borehole buckling, and horizontal bed slip.
+          </p>
+          <div class="card-footer">ANALOG ADC // BENDING STRAIN CALC</div>
+        </article>
+
+        <!-- Sensor 3: Moisture Sensor -->
+        <article class="device-card">
+          <div class="card-icon">💧</div>
+          <h3 class="card-title">Soil Moisture Sensor</h3>
+          <div class="card-subtitle">CAPACITIVE CORROSION-RESISTANT</div>
+          <p class="card-desc">
+            Tracks aquifer ruptures and groundwater seepage into goaf cavities. 
+            Water saturation degrades shear strength in sandstone layers, accelerating subsidence.
+          </p>
+          <div class="card-footer">VOLUMETRIC WATER CONTENT (VWC)</div>
+        </article>
+
+        <!-- MCU: STM32 -->
+        <article class="device-card">
+          <div class="card-icon">🔲</div>
+          <h3 class="card-title">STM32 Microcontroller</h3>
+          <div class="card-subtitle">ARM CORTEX-M CORE</div>
+          <p class="card-desc">
+            Serves as the high-speed edge processor. Gathers raw analog/I2C sensor streams, runs digital low-pass filtering, 
+            detects threshold hazards, and executes low-power sleep cycles.
+          </p>
+          <div class="card-footer">DMA SAMPLING // ULTRA LOW-POWER SLEEP</div>
+        </article>
+
+        <!-- Network: LoRa -->
+        <article class="device-card">
+          <div class="card-icon">📡</div>
+          <h3 class="card-title">LoRa Transceiver</h3>
+          <div class="card-subtitle">LONG RANGE RF (SX1276/8)</div>
+          <p class="card-desc">
+            Enables long-range wireless telemetry across rugged mining terrain and open-cast pits. 
+            Transmits periodic status packets and critical alarm flags up to 5-10 km with low power consumption.
+          </p>
+          <div class="card-footer">CHIRP SPREAD SPECTRUM // 868/915 MHz</div>
+        </article>
+      </div>
+    </section>
+
+    <!-- SLIDE 3: Interactive 3D CAD Model -->
+    <section class="slide" id="slide-2">
+      <div class="slide-header">
+        <div class="slide-tag">Mechanical & Packaging Design</div>
+        <h2 class="slide-title">Interactive CAD Probe Teardown</h2>
+      </div>
+
+      <div class="cad-stage">
+        <div id="cad-canvas-container">
+          <div class="cad-controls-overlay">
+            <span>DRAG: ORBIT | SCROLL: ZOOM | RIGHT-CLICK: PAN</span>
+          </div>
+        </div>
+        
+        <div class="cad-sidebar">
+          <div>
+            <h4 style="font-family: var(--font-mono); color: var(--accent-orange); margin-bottom: 0.5rem;">SUBSURFACE CYLINDRICAL CASING</h4>
+            <p class="part-annotation">
+              The probe consists of an IP68-rated fiberglass tube divided into segmented flexible sections. 
+              The top cap houses the antenna beacon, the midsection houses the STM32 brain + MPU6050, 
+              and the probe tip contains moisture probes and anchor fins.
+            </p>
+          </div>
+
+          <div class="probe-actions">
+            <button id="btn-explode" onclick="toggleExplodedView()">💥 EXPLODE CAD VIEW</button>
+            <button id="btn-rotate" onclick="toggleAutoRotate()">🔄 AUTO ROTATE: ON</button>
+            <button onclick="resetCadCamera()">🎯 RESET CAMERA</button>
+          </div>
+
+          <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin-top: auto;">
+            PHYSICAL DIMENSIONS:<br>
+            • Length: 1200 mm<br>
+            • Outer Diameter: 60 mm<br>
+            • Material: Carbon Fiber + ABS
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 4: Architecture Pipeline -->
+    <section class="slide" id="slide-3">
+      <div class="slide-header">
+        <div class="slide-tag">Data Flow & Safety Execution</div>
+        <h2 class="slide-title">End-to-End System Pipeline</h2>
+      </div>
+
+      <div class="pipeline-container">
+        <div class="pipeline-step">
+          <div class="step-num">01</div>
+          <h3 style="margin-bottom: 0.5rem;">Borehole Sensing</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;">
+            MPU6050, Flex, and Moisture sensors detect subterranean shifts, bedding separation, and pore pressure changes within borehole strata.
+          </p>
+        </div>
+
+        <div class="pipeline-step">
+          <div class="step-num">02</div>
+          <h3 style="margin-bottom: 0.5rem;">STM32 Edge Compute</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;">
+            Sensor fusion running on STM32 validates true deformation events versus micro-seismic noise. Encodes payload into compact binary packets.
+          </p>
+        </div>
+
+        <div class="pipeline-step">
+          <div class="step-num">03</div>
+          <h3 style="margin-bottom: 0.5rem;">LoRa Long-Range Link</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;">
+            Packets transmitted across the surface perimeter to the mine central gateway, bypassing underground obstacles without cellular reliance.
+          </p>
+        </div>
+
+        <div class="pipeline-step">
+          <div class="step-num">04</div>
+          <h3 style="margin-bottom: 0.5rem;">Early Warning & Cloud</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;">
+            Cloud GIS dashboards plot 3D surface subsidence heatmaps. Triggers audio-visual alarm sirens to evacuate danger zones before catastrophic caving.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Bottom Navigation Bar -->
+  <footer class="bottom-bar">
+    <div class="slide-dots">
+      <div class="dot active" onclick="goToSlide(0)"></div>
+      <div class="dot" onclick="goToSlide(1)"></div>
+      <div class="dot" onclick="goToSlide(2)"></div>
+      <div class="dot" onclick="goToSlide(3)"></div>
+    </div>
+    
+    <div class="nav-buttons">
+      <button class="nav-btn" onclick="prevSlide()">[P] PREV</button>
+      <button class="nav-btn" onclick="nextSlide()">NEXT [N] →</button>
+    </div>
+  </footer>
+
+  <!-- Script for Deck Navigation and 3D CAD Probe Rendering -->
+  <script>
+    /* =======================================================
+       SLIDE DECK NAVIGATION LOGIC
+       ======================================================= */
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.dot');
+    const totalSlides = slides.length;
+
+    function goToSlide(n) {
+      slides[currentSlide].classList.remove('active');
+      dots[currentSlide].classList.remove('active');
+      
+      currentSlide = (n + totalSlides) % totalSlides;
+      
+      slides[currentSlide].classList.add('active');
+      dots[currentSlide].classList.add('active');
+
+      // Resize 3D CAD viewport if entering CAD slide
+      if (currentSlide === 2 && renderer) {
+        onWindowResize();
+      }
+    }
+
+    function nextSlide() { goToSlide(currentSlide + 1); }
+    function prevSlide() { goToSlide(currentSlide - 1); }
+
+    // Keyboard navigation
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'n' || e.key === 'N') nextSlide();
+      if (e.key === 'ArrowLeft' || e.key === 'p' || e.key === 'P') prevSlide();
+    });
+
+    /* =======================================================
+       THREE.JS PROCEDURAL 3D CAD PROBE GENERATOR
+       ======================================================= */
+    let scene, camera, renderer, controls;
+    let isExploded = false;
+    let autoRotate = true;
+    const parts = {};
+
+    function initCAD() {
+      const container = document.getElementById('cad-canvas-container');
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x12161f);
+
+      // Camera
+      camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+      camera.position.set(20, 15, 30);
+
+      // Renderer
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.shadowMap.enabled = true;
+      container.appendChild(renderer.domElement);
+
+      // Controls
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+
+      // Lighting
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+      scene.add(ambientLight);
+
+      const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+      dirLight.position.set(20, 40, 20);
+      scene.add(dirLight);
+
+      const rimLight = new THREE.DirectionalLight(0xff5e00, 1.5);
+      rimLight.position.set(-20, -10, -20);
+      scene.add(rimLight);
+
+      // Grid Base
+      const grid = new THREE.GridHelper(50, 50, 0x30363d, 0x1f242c);
+      grid.position.y = -12;
+      scene.add(grid);
+
+      // BUILD PROCEDURAL PROBE ASSEMBLY
+      buildProbeAssembly();
+
+      // Render Loop
+      function animate() {
+        requestAnimationFrame(animate);
+        if (autoRotate && controls) {
+          parts.probeGroup.rotation.y += 0.005;
+        }
+        controls.update();
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      window.addEventListener('resize', onWindowResize);
+    }
+
+    function buildProbeAssembly() {
+      const group = new THREE.Group();
+      parts.probeGroup = group;
+
+      // Materials
+      const orangeMat = new THREE.MeshStandardMaterial({ color: 0xff5e00, metalness: 0.6, roughness: 0.3 });
+      const darkMat = new THREE.MeshStandardMaterial({ color: 0x22262d, metalness: 0.8, roughness: 0.2 });
+      const chromeMat = new THREE.MeshStandardMaterial({ color: 0xdde2ea, metalness: 0.9, roughness: 0.1 });
+      const boardMat = new THREE.MeshStandardMaterial({ color: 0x008855, metalness: 0.3, roughness: 0.5 });
+      const copperMat = new THREE.MeshStandardMaterial({ color: 0xb87333, metalness: 0.8, roughness: 0.2 });
+
+      // 1. TOP CAP / ANTENNA MODULE (Z/Y displacement)
+      const topCapGeo = new THREE.CylinderGeometry(2.5, 2.5, 3, 32);
+      parts.topCap = new THREE.Mesh(topCapGeo, orangeMat);
+      parts.topCap.position.y = 8;
+      
+      const antennaGeo = new THREE.CylinderGeometry(0.2, 0.2, 6, 16);
+      const antenna = new THREE.Mesh(antennaGeo, darkMat);
+      antenna.position.y = 4.5;
+      parts.topCap.add(antenna);
+      group.add(parts.topCap);
+
+      // 2. MCU & SENSOR CORE (STM32 + MPU6050 Carrier Board)
+      parts.mcuCore = new THREE.Group();
+      const pcbGeo = new THREE.BoxGeometry(2, 6, 0.4);
+      const pcb = new THREE.Mesh(pcbGeo, boardMat);
+      parts.mcuCore.add(pcb);
+      
+      // Chips on board
+      const stmGeo = new THREE.BoxGeometry(1, 1, 0.2);
+      const stmChip = new THREE.Mesh(stmGeo, darkMat);
+      stmChip.position.set(0, 1, 0.3);
+      parts.mcuCore.add(stmChip);
+
+      const mpuGeo = new THREE.BoxGeometry(0.6, 0.6, 0.2);
+      const mpuChip = new THREE.Mesh(mpuGeo, copperMat);
+      mpuChip.position.set(0, -1.2, 0.3);
+      parts.mcuCore.add(mpuChip);
+
+      parts.mcuCore.position.y = 3;
+      group.add(parts.mcuCore);
+
+      // 3. MAIN TRANSLUCENT BODY SHELL
+      const shellGeo = new THREE.CylinderGeometry(3, 3, 10, 32);
+      const shellMat = new THREE.MeshPhysicalMaterial({
+        color: 0x30363d,
+        transparent: true,
+        opacity: 0.4,
+        roughness: 0.1,
+        transmission: 0.7,
+        thickness: 0.5
+      });
+      parts.shell = new THREE.Mesh(shellGeo, shellMat);
+      parts.shell.position.y = 2;
+      group.add(parts.shell);
+
+      // 4. FLEX SENSOR RIBBON CORE
+      const flexGeo = new THREE.BoxGeometry(0.3, 8, 1.2);
+      parts.flexSensor = new THREE.Mesh(flexGeo, copperMat);
+      parts.flexSensor.position.y = -6;
+      group.add(parts.flexSensor);
+
+      // 5. LOWER STRATA CASING
+      const lowerShellGeo = new THREE.CylinderGeometry(2.6, 2.6, 9, 32);
+      parts.lowerShell = new THREE.Mesh(lowerShellGeo, darkMat);
+      parts.lowerShell.position.y = -6.5;
+      group.add(parts.lowerShell);
+
+      // 6. BOTTOM PROBE CONE & MOISTURE FORKS
+      parts.bottomTip = new THREE.Group();
+      const coneGeo = new THREE.ConeGeometry(2.6, 4, 32);
+      const cone = new THREE.Mesh(coneGeo, chromeMat);
+      cone.position.y = -13;
+      cone.rotation.x = Math.PI;
+      parts.bottomTip.add(cone);
+
+      // Moisture sensor prongs
+      const prongGeo = new THREE.CylinderGeometry(0.15, 0.15, 3, 16);
+      const prong1 = new THREE.Mesh(prongGeo, chromeMat);
+      prong1.position.set(0.8, -15, 0);
+      const prong2 = new THREE.Mesh(prongGeo, chromeMat);
+      prong2.position.set(-0.8, -15, 0);
+      parts.bottomTip.add(prong1);
+      parts.bottomTip.add(prong2);
+
+      group.add(parts.bottomTip);
+
+      scene.add(group);
+    }
+
+    function toggleExplodedView() {
+      isExploded = !isExploded;
+      const btn = document.getElementById('btn-explode');
+      
+      if (isExploded) {
+        btn.classList.add('active-action');
+        btn.innerText = "COLLAPSE CAD VIEW";
+        // Animate exploded positions
+        parts.topCap.position.y = 15;
+        parts.mcuCore.position.x = 6;
+        parts.shell.position.x = -6;
+        parts.flexSensor.position.x = 4;
+        parts.lowerShell.position.y = -9;
+        parts.bottomTip.position.y = -19;
+      } else {
+        btn.classList.remove('active-action');
+        btn.innerText = "💥 EXPLODE CAD VIEW";
+        // Restore assembled positions
+        parts.topCap.position.set(0, 8, 0);
+        parts.mcuCore.position.set(0, 3, 0);
+        parts.shell.position.set(0, 2, 0);
+        parts.flexSensor.position.set(0, -6, 0);
+        parts.lowerShell.position.set(0, -6.5, 0);
+        parts.bottomTip.position.set(0, 0, 0);
+      }
+    }
+
+    function toggleAutoRotate() {
+      autoRotate = !autoRotate;
+      const btn = document.getElementById('btn-rotate');
+      btn.innerText = autoRotate ? "🔄 AUTO ROTATE: ON" : "⏸️ AUTO ROTATE: OFF";
+    }
+
+    function resetCadCamera() {
+      camera.position.set(20, 15, 30);
+      controls.target.set(0, 0, 0);
+    }
+
+    function onWindowResize() {
+      const container = document.getElementById('cad-canvas-container');
+      if (!container || !renderer || !camera) return;
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    }
+
+    // Initialize 3D Engine on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      initCAD();
+    });
+  </script>
+</body>
+</html>
